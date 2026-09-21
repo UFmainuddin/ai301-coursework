@@ -15,22 +15,72 @@ wrong label is not graded.
 
 **Issue link**
 
-[The individual Path Review issue page. A link to the repository or the issue list
-does not satisfy this field.]
+https://github.com/codepath/pathreview-ai301-fa26-s3/issues/61
 
 **Verdict output**
 
-[Your skill's live-mode output for this issue, pasted verbatim and ending with the
-fenced JSON verdict block. A summary does not satisfy this field.]
-
-**The verdict must record `accept` for this issue.** Choose an issue your own skill
-accepts. If your skill rejects every candidate you try, that is a signal about your
-rubric rather than about the issues: revise it and re-run — retries are unlimited and a
-partial re-run costs about $0.20 — or run the skill on different candidates. Output
-recording `reject` for the issue you chose earns no credit for this field.
+Live-mode run graded three candidates from the Path Review repo together
+(`issues/61`, `issues/62`, `issues/60`); full output below, issue 61 ranked first
+and accepted:
 
 ```
-paste the output here, including the closing JSON block
+All three candidates are in scope (codepath/pathreview-ai301-fa26-s3). Grading each
+independently against rubric.md, applying the Path Review house rule (student claim
+comments don't count as claims):
+
+Issue #61 — Health check DB probe passes a raw SQL string, fails under SQLAlchemy 2.x
+- maintainer-alive: pass — last 5 default-branch commits all within the last 4 weeks (most recent 2026-09-16)
+- repo-in-use: pass — not archived; last push 2026-09-16, 5 days before today
+- unclaimed: pass — no assignee, 0 comments, no linked PR
+- scope-fits-newcomer: pass — one file (api/routes/health.py), one root cause (raw string needs sqlalchemy.text()), exact reproducing error message given
+- ai-contribution-policy: pass — docs/CONTRIBUTING.md is silent on AI-assisted contributions
+- clear-repro-or-spec (preferred): pass — exact ArgumentError message quoted
+
+Issue #62 — Health check references settings.redis_host, which does not exist on Settings
+- maintainer-alive: pass · repo-in-use: pass (same repo facts)
+- unclaimed: pass — no assignee; one student comment ("would like to work on this issue") — house rule: does not block
+- scope-fits-newcomer: pass — one file, one root cause (wrong attribute name), clear repro steps
+- ai-contribution-policy: pass
+- clear-repro-or-spec (preferred): pass
+
+Issue #60 — Faithfulness checker crashes when a context chunk has text: None
+- maintainer-alive: pass · repo-in-use: pass
+- unclaimed: pass — no assignee; one student comment ("I'll take this") — house rule: does not block; no open linked PR (one stale, unresolvable commit reference found, not a real linked PR)
+- scope-fits-newcomer: pass — one file (rag/evaluator/faithfulness_checker.py), one root cause (dict.get doesn't override an explicit None), repro includes a code snippet and names the exact failing unit test
+- ai-contribution-policy: pass
+- clear-repro-or-spec (preferred): pass
+
+Ranked read-out (all three accepted):
+1. #61 — best fit: zero competing claims, the single most mechanical and well-known fix pattern (wrap literal SQL in sqlalchemy.text()), lowest ambiguity for a first PR.
+2. #62 — same file/subsystem as #61, one student already expressed interest (non-blocking under the house rule), and CONTRIBUTING.md separately flags this issue by number as also needing a pyproject.toml lint-suppression removed alongside the code fix — slightly more surface area.
+3. #60 — different subsystem (RAG evaluator, less familiar than a REST health endpoint), one student already claimed intent to work on it (non-blocking), still very well-scoped with an exact reproducing snippet.
+
+[
+  {"item": "https://github.com/codepath/pathreview-ai301-fa26-s3/issues/61", "checks": [
+    {"name": "maintainer-alive", "grade": "pass", "evidence": "last 5 default-branch commits dated 2026-08-24 to 2026-09-16, all within 90 days"},
+    {"name": "repo-in-use", "grade": "pass", "evidence": "not archived; last push 2026-09-16, 5 days before capture"},
+    {"name": "unclaimed", "grade": "pass", "evidence": "assignees: none; 0 comments; no linked PR"},
+    {"name": "scope-fits-newcomer", "grade": "pass", "evidence": "one file (api/routes/health.py), one root cause: raw 'SELECT 1' string not wrapped in sqlalchemy.text()"},
+    {"name": "ai-contribution-policy", "grade": "pass", "evidence": "docs/CONTRIBUTING.md states no policy on AI-generated contributions"},
+    {"name": "clear-repro-or-spec", "grade": "pass", "evidence": "issue quotes the exact ArgumentError message raised"}
+  ], "verdict": "accept"},
+  {"item": "https://github.com/codepath/pathreview-ai301-fa26-s3/issues/62", "checks": [
+    {"name": "maintainer-alive", "grade": "pass", "evidence": "last 5 default-branch commits dated 2026-08-24 to 2026-09-16, all within 90 days"},
+    {"name": "repo-in-use", "grade": "pass", "evidence": "not archived; last push 2026-09-16, 5 days before capture"},
+    {"name": "unclaimed", "grade": "pass", "evidence": "assignees: none; one student comment ('would like to work on this issue') is not a blocking claim under the Path Review house rule; no linked PR"},
+    {"name": "scope-fits-newcomer", "grade": "pass", "evidence": "one file (api/routes/health.py), one root cause: settings.redis_host does not exist, should use settings.redis_url"},
+    {"name": "ai-contribution-policy", "grade": "pass", "evidence": "docs/CONTRIBUTING.md states no policy on AI-generated contributions"},
+    {"name": "clear-repro-or-spec", "grade": "pass", "evidence": "issue gives exact call (GET /health) and exact log signature (AttributeError for redis_host)"}
+  ], "verdict": "accept"},
+  {"item": "https://github.com/codepath/pathreview-ai301-fa26-s3/issues/60", "checks": [
+    {"name": "maintainer-alive", "grade": "pass", "evidence": "last 5 default-branch commits dated 2026-08-24 to 2026-09-16, all within 90 days"},
+    {"name": "repo-in-use", "grade": "pass", "evidence": "not archived; last push 2026-09-16, 5 days before capture"},
+    {"name": "unclaimed", "grade": "pass", "evidence": "assignees: none; one student comment ('I'll take this') is not a blocking claim under the Path Review house rule; timeline shows one unresolvable stale commit reference, not a real linked PR"},
+    {"name": "scope-fits-newcomer", "grade": "pass", "evidence": "one file (rag/evaluator/faithfulness_checker.py), one root cause: dict.get default does not override an explicit None value"},
+    {"name": "ai-contribution-policy", "grade": "pass", "evidence": "docs/CONTRIBUTING.md states no policy on AI-generated contributions"},
+    {"name": "clear-repro-or-spec", "grade": "pass", "evidence": "issue includes a runnable code snippet, the exact TypeError, and names the failing unit test test_none_context_chunk_text"}
+  ], "verdict": "accept"}
+]
 ```
 
 ---
@@ -119,12 +169,35 @@ This is also the basis for the claim comment you write in Unit 2.
 
 **Selection rationale**
 
-[Answer all three:
-
-1. The issue's fit to your interests and to the time available.
-2. What the verdict identified correctly, and what you weighed that the rubric could
-   not.
-3. The anticipated difficulty in claiming it.]
+1. **Fit to my interests and the time available.** My fit profile in `scope.md` says
+   I want to practice reading unfamiliar code and shipping a clean, well-scoped PR
+   without needing deep domain knowledge on day one, and to avoid frontend/UI work.
+   Issue #61 is exactly that: a single Python backend file, one root cause I can name
+   precisely (a raw SQL string needs `sqlalchemy.text()` under SQLAlchemy 2.x), and a
+   fix that's a known, teachable idiom rather than a judgment call. Given this is also
+   the unit where I'm still learning the repo's whole contribution mechanics (branch
+   naming, conventional commits, the five-job CI suite, the PR template), a small,
+   unambiguous bug is the right size to spend my time on the *process* instead of
+   fighting the *problem*.
+2. **What the verdict got right, and what I weighed beyond it.** The rubric correctly
+   confirmed the mechanical facts: the repo is active, the issue is genuinely
+   unclaimed (no assignee, no linked PR), the fix is bounded to one file, and the
+   repo's `docs/CONTRIBUTING.md` has no AI-contribution ban. What the rubric can't see,
+   because it isn't a rubric-scored fact, is competitive pressure in a shared classroom
+   repo: #62 and #60 each already have a student comment expressing interest, while #61
+   has zero. The rubric correctly says the house rule makes those comments
+   non-blocking, but "technically unclaimed" and "nobody else is currently circling it"
+   are different things, and I weighed the second one in #61's favor since it's a
+   shared repo I'll be claiming this issue in for real.
+3. **Anticipated difficulty in claiming it.** The code fix itself should be low
+   difficulty — wrap the literal `"SELECT 1"` in `sqlalchemy.text()` and confirm the
+   probe passes. The harder part is likely process, not code: `docs/CONTRIBUTING.md`
+   warns that a first PR from a new contributor can sit at "waiting for approval to run
+   workflows" until a maintainer releases CI, which is outside my control. I also don't
+   yet know whether issue #61 has a seeded `xfail`-marked test or a `pyproject.toml`
+   lint suppression tied to it the way #62 is explicitly called out as having one — I'll
+   need to check for both when I reproduce the issue in Unit 2, since removing them (if
+   present) is part of actually closing the issue, not just fixing the visible bug.
 
 ---
 
